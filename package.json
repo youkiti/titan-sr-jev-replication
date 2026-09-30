@@ -1,0 +1,22 @@
+{
+  "name": "titan-sr-jev-replication",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.4",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node dist/metrics.selftest.js && node dist/verify.selftest.js",
+    "prepare-data": "node dist/prepare.js",
+    "screen": "node dist/run.js",
+    "export-scores": "node dist/export-scores.js",
+    "summarize": "node dist/summarize.js"
+  }
+}
