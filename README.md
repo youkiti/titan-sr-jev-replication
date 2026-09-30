@@ -53,6 +53,22 @@ See [report.md](report.md) for per-review results and review-level medians
 with interquartile ranges. Pooled results combine records across reviews;
 review-level medians describe the distribution across reviews.
 
+## Jev output ledgers
+
+`ledgers/` contains 22 gzip-compressed JSONL files from the original run,
+with one JSON line per completed request. Each line has these fields:
+`key`, `dataset`, `label_included`, `include_probability`, `model_requested`,
+`model_version`, `input_tokens`, `output_tokens`, `latency_ms`, `attempts`,
+`config_hash`, `ledger_version`, and `completed_at`.
+Record text (titles and abstracts) is not included. The raw API response
+bodies were not stored; the ledgers retain the parsed probability and metadata.
+
+The files contain 142,508 lines for 142,504 unique records. The four extra
+lines are CD013042 requests with negative `latency_ms` that `readLedger`
+skips; those records were screened again (see [Run record](#run-record)).
+Every line reports `model_version` as `jev-1.13.0`. The `attempts` counts
+are 1 in 142,492 lines, 2 in 9, 4 in 4, and 5 in 3.
+
 ## Model and setup
 
 The endpoint is `https://api.typesafe.ai/v1/systemone`.
@@ -185,6 +201,15 @@ Re-running the same command resumes only unfinished records.
 After screening completes, `export-scores` creates the compressed scores
 and `summarize` regenerates the report.
 
+Running `npm run unpack-ledgers` before `npm run screen` resumes from the
+original ledgers with the original configuration. Valid existing records
+are skipped; these ledgers already cover all 142,504 records. `readLedger`
+skips the four invalid latency rows and retains their valid rerun entries.
+A different configuration hash is rejected: it covers the model, question
+design, resolved screening prompt (including criteria), and output language.
+Keep the original model and ledger version so screening reads these filenames.
+The API key requirement above still applies.
+
 After an incomplete run, use `npm run export-scores -- --allow-partial` and
 `npm run summarize -- --partial` to inspect provisional results.
 The partial report overwrites `report.md` (or `.tmp/fake/report.md` with `--fake`),
@@ -193,6 +218,27 @@ so restore the committed `report.md` with `git restore report.md` afterwards if 
 `--fake` needs no key and writes to `.tmp/fake/`. It still needs the prepared
 input data. It exits with code 2 by design because the fake includes
 permanent failures.
+
+### D. Verify the scores from the ledgers
+
+This path requires the prepared data from path B, but no API key or API calls.
+The unpacker decompresses `ledgers/*.jsonl.gz` into `results/`, leaves
+byte-identical existing files untouched, and refuses to overwrite any file
+whose content differs. It prints the numbers of files and lines written
+and already present with identical content.
+
+```sh
+npm run build
+npm run unpack-ledgers
+npm run export-scores
+git diff --exit-code scores/
+npm run summarize
+git diff --exit-code report.md
+```
+
+No output from `git diff --exit-code scores/` means the rebuilt scores are
+identical to the committed scores. The final diff similarly verifies the
+regenerated report. Both diff commands should exit with code 0.
 
 ## Run record
 

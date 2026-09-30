@@ -16,6 +16,7 @@
     "test": "npm run build && node dist/metrics.selftest.js && node dist/verify.selftest.js",
     "prepare-data": "node dist/prepare.js",
     "screen": "node dist/run.js",
+    "unpack-ledgers": "node dist/unpack-ledgers.js",
     "export-scores": "node dist/export-scores.js",
     "summarize": "node dist/summarize.js"
   }
