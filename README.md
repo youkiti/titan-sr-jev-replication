@@ -185,6 +185,11 @@ Re-running the same command resumes only unfinished records.
 After screening completes, `export-scores` creates the compressed scores
 and `summarize` regenerates the report.
 
+After an incomplete run, use `npm run export-scores -- --allow-partial` and
+`npm run summarize -- --partial` to inspect provisional results.
+The partial report overwrites `report.md` (or `.tmp/fake/report.md` with `--fake`),
+so restore the committed `report.md` with `git restore report.md` afterwards if needed.
+
 `--fake` needs no key and writes to `.tmp/fake/`. It still needs the prepared
 input data. It exits with code 2 by design because the fake includes
 permanent failures.

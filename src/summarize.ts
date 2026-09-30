@@ -77,10 +77,11 @@ function loadScores(file: string, config: Config, partial: boolean): Score[] {
 }
 function main(): void {
     const args = process.argv.slice(2);
-    if (args.some(a => a !== '--fake')) throw new BenchError('Only --fake is accepted.');
+    if (args.some(a => !['--fake', '--partial'].includes(a))) throw new BenchError('Arguments: --fake / --partial.');
     const fake = args.includes('--fake'), config = loadConfig();
     const completeFile = scoresPath(config, fake), partialFile = scoresPath(config, fake, true);
-    const file = fs.existsSync(completeFile) ? completeFile : partialFile;
+    const file = args.includes('--partial') ? partialFile : fs.existsSync(completeFile) ? completeFile : partialFile;
+    if (args.includes('--partial') && !fs.existsSync(file)) throw new BenchError('Partial scores missing. Run export-scores with --allow-partial first.');
     if (!fs.existsSync(file)) throw new BenchError('Scores missing. Run export-scores first.');
     const partial = file === partialFile;
     const scores = loadScores(file, config, partial);

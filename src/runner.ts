@@ -1,4 +1,5 @@
 import { createHash } from 'crypto';
+import { performance } from 'node:perf_hooks';
 import { BenchConfig, DatasetRecord, LedgerRow } from './ledger';
 
 interface ScreeningResult {
@@ -69,7 +70,7 @@ export async function runRecords(options: RunOptions): Promise<number> {
         for (let attempt = 1; attempt <= config.retry.maxAttempts; attempt++) {
             while (!stopReason && Date.now() < cooldownUntil) await waitForCooldown();
             if (stopReason) return;
-            const start = Date.now();
+            const start = performance.now();
             let result: ScreeningResult;
             try {
                 result = await screen(record, attempt);
@@ -98,7 +99,7 @@ export async function runRecords(options: RunOptions): Promise<number> {
                 model_requested: config.model, model_version: result.responseMetadata.modelVersion ?? null,
                 input_tokens: result.usageMetadata.promptTokenCount,
                 output_tokens: result.usageMetadata.candidatesTokenCount,
-                latency_ms: Date.now() - start, attempts: attempt,
+                latency_ms: Math.round(performance.now() - start), attempts: attempt,
                 config_hash: hash, ledger_version: config.ledgerVersion, completed_at: new Date().toISOString(),
             };
             try { append(row); }
