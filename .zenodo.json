@@ -1,0 +1,28 @@
+{
+  "title": "titan-sr-jev-replication: TypeSafe Jev screening of the TITAN-SR external validation set (22 Cochrane reviews)",
+  "upload_type": "software",
+  "description": "Replication package that scores the 22-review, 142,504-record temporal external validation set of TITAN-SR (Pitre et al., J Clin Epidemiol 2026) with the TypeSafe jev-1.13.0 screening model, as used by the TiAb Review Plugin. Includes the code, the per-record output ledgers, the compressed scores and the generated report. Input data are rebuilt from the public Chan et al. 2025 dataset (CC BY 4.0) and verified by SHA-256.",
+  "creators": [
+    {
+      "name": "Kataoka, Yuki",
+      "affiliation": "Center for Postgraduate Clinical Training and Career Development, Nagoya University Hospital",
+      "orcid": "0000-0001-7982-5213"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "systematic review",
+    "title and abstract screening",
+    "large language models",
+    "external validation",
+    "TITAN-SR",
+    "TiAb Review Plugin"
+  ],
+  "related_identifiers": [
+    { "identifier": "10.1016/j.jclinepi.2026.112514", "relation": "references", "scheme": "doi" },
+    { "identifier": "10.17632/7sgmg89zb6", "relation": "isDerivedFrom", "scheme": "doi" },
+    { "identifier": "10.1017/rsm.2025.1", "relation": "references", "scheme": "doi" },
+    { "identifier": "arXiv:2604.08602", "relation": "isSupplementTo", "scheme": "arxiv" }
+  ],
+  "notes": "API costs were funded by AMED under Grant Number JP26rea522132."
+}
